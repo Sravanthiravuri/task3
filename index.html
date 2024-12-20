@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ice Cream Parlour</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #ff4081;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .menu-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            width: 200px;
+        }
+        .menu-item img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .order-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .order-form label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .order-form input, .order-form select, .order-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .order-form button {
+            background-color: #ff4081;
+            color: white;
+            cursor: pointer;
+        }
+        .order-form button:hover {
+            background-color: #e91e63;
+        }
+        .order-summary {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to USP IceCream Parlour</h1>
+    <p>Your favorite ice cream flavors, freshly made every day!</p>
+</header>
+
+<div class="container">
+    <!-- Menu Section -->
+    <div class="menu">
+        <div class="menu-item">
+            <img src="https://tse2.mm.bing.net/th?id=OIP.cS-vantzMfqxGxBAvrOgLgHaHa&pid=Api&P=0&h=180" alt="Vanilla Ice Cream">
+            <h3>Vanilla</h3>
+        </div>
+        <div class="menu-item">
+            <img src="https://tse2.mm.bing.net/th?id=OIP.WpCZOTUr6pwYFxG5mmQy6wHaHa&pid=Api&P=0&h=180" alt="Chocolate Ice Cream">
+            <h3>Chocolate</h3>
+        </div>
+        <div class="menu-item">
+            <img src="https://tse1.mm.bing.net/th?id=OIP.UcEockyWq9XOgf_KzKoJewHaHa&pid=Api&P=0&h=180" alt="Strawberry Ice Cream">
+            <h3>Strawberry</h3>
+        </div>
+        <div class="menu-item">
+            <img src="http://images6.fanpop.com/image/photos/34700000/Green-Mint-Chocolate-Chip-Ice-Cream-colors-34739517-500-500.jpg" alt="Mint Ice Cream">
+            <h3>Mint</h3>
+        </div>
+    </div>
+
+    <!-- Order Form -->
+    <div class="order-form">
+        <h2>Order Your Ice Cream</h2>
+        <form id="orderForm" onsubmit="return handleOrderSubmit(event)">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+
+            <label for="flavor">Choose your flavor:</label>
+            <select id="flavor" name="flavor" required>
+                <option value="">Select Flavor</option>
+                <option value="Vanilla">Vanilla</option>
+                <option value="Chocolate">Chocolate</option>
+                <option value="Strawberry">Strawberry</option>
+                <option value="Mint">Mint</option>
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" required placeholder="Enter quantity">
+
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary" id="orderSummary" style="display: none;">
+        <h2>Order Summary</h2>
+        <p id="summaryName"></p>
+        <p id="summaryFlavor"></p>
+        <p id="summaryQuantity"></p>
+    </div>
+</div>
+
+<!-- JavaScript for Form Validation and Dynamic Content -->
+<script>
+    function handleOrderSubmit(event) {
+        event.preventDefault();
+
+        // Get user input
+        const name = document.getElementById('name').value;
+        const flavor = document.getElementById('flavor').value;
+        const quantity = document.getElementById('quantity').value;
+
+        // Basic form validation
+        if (!name || !flavor || !quantity) {
+            alert("All fields are required!");
+            return false;
+        }
+
+        // Prevent XSS by sanitizing inputs
+        const sanitizedName = sanitizeInput(name);
+        const sanitizedFlavor = sanitizeInput(flavor);
+        const sanitizedQuantity = sanitizeInput(quantity);
+
+        // Update the order summary
+        document.getElementById('summaryName').textContent = `Name: ${sanitizedName}`;
+        document.getElementById('summaryFlavor').textContent = `Flavor: ${sanitizedFlavor}`;
+        document.getElementById('summaryQuantity').textContent = `Quantity: ${sanitizedQuantity}`;
+
+        // Display the order summary
+        document.getElementById('orderSummary').style.display = 'block';
+
+        // Reset the form
+        document.getElementById('orderForm').reset();
+        return false;
+    }
+
+    function sanitizeInput(input) {
+        const element = document.createElement('div');
+        element.innerText = input;
+        return element.innerHTML;
+    }
+</script>
+
+</body>
+</html>
